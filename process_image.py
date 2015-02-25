@@ -4,6 +4,7 @@ from PIL import Image
 im = Image.open('Input/Shapes0.png')
 im = im.convert('L')
 pic = im.load()
+result = []
 for b in range(0, 800, 100):
     for a in range(0, 1000, 100):
         black = 0
@@ -32,10 +33,22 @@ for b in range(0, 800, 100):
         #print 'Length of gradient: ' + str(gradient)
         #print 'Ratio: ' + str(ratio)
         if ratio > 14.4 and ratio < 18:
-            print 'triangle'
+            result.append('triangle')
         elif ratio > 30:
-            print 'star'
+            result.append('star')
         elif ratio < 10:
-            print 'circle'
+            result.append('circle')
         else:
-            print 'cube'
+            result.append('square')
+
+
+with open('Input/Shapes0.txt') as f:
+    content = f.read().replace(' ', '').splitlines()
+
+correct = 0
+for i in range(0, 80):
+    if content[i] == result[i]:
+        correct += 1
+
+print correct
+print 'Recognition Ratio: ' + str(float(correct)/float(80))
