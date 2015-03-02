@@ -1,6 +1,6 @@
 import math
 from PIL import Image
-from ConfusionMatrix import ConfusioinMatrix
+from ConfusionMatrix import ConfusionMatrix
 
 im = Image.open('Input/Shapes1.png')
 im = im.convert('L')
@@ -71,7 +71,7 @@ for a in range(0, 800, 100):
 with open('Input/Shapes1.txt') as f:
     content = f.read().replace(' ', '').splitlines()
 
-matrix = ConfusioinMatrix()
+matrix = ConfusionMatrix()
 
 correct = 0
 for i in range(0, 80):

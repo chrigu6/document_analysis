@@ -4,7 +4,7 @@ Created on Mar 2, 2015
 @author: chrigu
 '''
 
-class ConfusioinMatrix:
+class ConfusionMatrix:
     
     def __init__(self):
         self.categories = []
