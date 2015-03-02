@@ -1,7 +1,8 @@
 import math
 from PIL import Image
+from ConfusionMatrix import ConfusioinMatrix
 
-im = Image.open('Input/Shapes0.png')
+im = Image.open('Input/Shapes1.png')
 im = im.convert('L')
 pic = im.load()
 result = []
@@ -67,14 +68,19 @@ for a in range(0, 800, 100):
             result.append('circle')
 
 
-with open('Input/Shapes0.txt') as f:
+with open('Input/Shapes1.txt') as f:
     content = f.read().replace(' ', '').splitlines()
+
+matrix = ConfusioinMatrix()
 
 correct = 0
 for i in range(0, 80):
+    matrix.addResult([content[i],result[i]])
     if content[i] == result[i]:
         correct += 1
     else:
         print(content[i], result[i])
 
-print 'Recognition Ratio: ' + str(float(correct)/float(80))
+print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+print 'Confusion-Matrix:\n'
+print matrix
