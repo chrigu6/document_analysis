@@ -30,14 +30,6 @@ class ConfusionMatrix:
         for element in self.categories:
             result = result + element[0] + "\t".expandtabs(12-len(element[0]))
         return result
-    
-    def getIndexOfCategory(self,name):
-        index = 0
-        for element in self.categories:
-            if element[0] == name:
-                return index
-            else:
-                index = index+1
                 
     def matches(self, results, figure):
         matches = 0.0
