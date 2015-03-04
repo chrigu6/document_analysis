@@ -1,8 +1,17 @@
 import math
 from PIL import Image
 from ConfusionMatrix import ConfusionMatrix
+from ImageFilter import ImageFilter
+from scipy import misc
 
-im = Image.open('Input/Shapes1.png')
+image = misc.imread('Input/Shapes2N2A.png')
+imagefilter = ImageFilter()
+filteredImage = imagefilter.MedianFilter(image, 9)
+misc.imsave('Input/test.png',filteredImage)
+
+
+
+im = Image.open('Input/test.png')
 im = im.convert('L')
 pic = im.load()
 result = []
