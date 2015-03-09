@@ -4,6 +4,7 @@ Created on Mar 4, 2015
 @author: chrigu
 '''
 
+import sys
 import scipy.ndimage as ndi
 import numpy as np
 
@@ -40,9 +41,9 @@ class ImageFilter:
 
         return value
 
-    def gaussianKernel(self, sigma, truncate=1.0):
+    def gaussianKernel(self, sigma=2):
         sigma = float(sigma)
-        radius = int(truncate * sigma + 0.5)
+        radius = int(sigma + 0.5)
 
         x, y = np.mgrid[-radius:radius+1, -radius:radius+1]
         sigma = sigma**2
@@ -51,3 +52,23 @@ class ImageFilter:
         k = k / np.sum(k)
 
         return k
+
+
+    def gaussianBlur(self, image, sigma=2):
+        result = np.full_like(image, 255)
+        window = np.ones((2 * sigma+1)**2)
+        kernel = self.gaussianKernel(sigma)
+        print kernel
+
+        for row in range(sigma, image.shape[0]-sigma):
+            for column in range(sigma, image.shape[1]-sigma):
+                i = 0
+                for x in range(0, sigma+2):
+                    for y in range(0, sigma+2):
+                        window[i] = (
+                            image[row + x - sigma][column + y - sigma] * kernel[x][y]
+                        )
+                        i += 1
+                result[row][column] = reduce(lambda x, y: x*y, window)
+
+        return result

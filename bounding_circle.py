@@ -7,10 +7,9 @@ from scipy import misc
 
 image = misc.imread('Input/Shapes2N2A.png')
 imagefilter = ImageFilter()
-print imagefilter.gaussianKernel(1)
-sys.exit(0)
-filteredImage = imagefilter.MedianFilter(image, 5)
-misc.imsave('Input/test.png',filteredImage)
+#filteredImage = imagefilter.MedianFilter(image, 5)
+gaussianImage = imagefilter.gaussianBlur(image, sigma=1)
+misc.imsave('Input/test.png', gaussianImage)
 
 im = Image.open('Input/test.png')
 im = im.convert('L')
@@ -78,7 +77,7 @@ for a in range(0, 800, 100):
             result.append('circle')
 
 
-with open('Input/Shapes1.txt') as f:
+with open('Input/Shapes2.txt') as f:
     content = f.read().replace(' ', '').splitlines()
 
 matrix = ConfusionMatrix()
