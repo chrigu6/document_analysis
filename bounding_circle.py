@@ -1,3 +1,4 @@
+import sys
 import math
 from PIL import Image
 from ConfusionMatrix import ConfusionMatrix
@@ -6,9 +7,10 @@ from scipy import misc
 
 image = misc.imread('Input/Shapes2N2A.png')
 imagefilter = ImageFilter()
+print imagefilter.gaussianKernel(1)
+sys.exit(0)
 filteredImage = imagefilter.MedianFilter(image, 5)
 misc.imsave('Input/test.png',filteredImage)
-
 
 im = Image.open('Input/test.png')
 im = im.convert('L')
