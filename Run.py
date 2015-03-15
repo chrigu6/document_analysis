@@ -9,6 +9,7 @@ import ExtractFeatures
 import Image
 import ImageFilter
 from scipy import misc
+import os.path
 
 
 def split_image(image):
@@ -128,10 +129,12 @@ if __name__ == '__main__':
     
     #Shapes2N2A
     print "Shapes2N2A\n"
-    imageFilter = ImageFilter.ImageFilter()
-    image = misc.imread('Input/Shapes2N2A.png')
-    image = imageFilter.MedianFilter(image, 5)
-    misc.imsave('Input/Shapes2N2AFiltered.png', image)
+    
+    if not os.path.exists('Input/Shapes2N2AFiltered.png'):
+        imageFilter = ImageFilter.ImageFilter()
+        image = misc.imread('Input/Shapes2N2A.png')
+        image = imageFilter.MedianFilter(image, 5)
+        misc.imsave('Input/Shapes2N2AFiltered.png', image)
     
     matrix = ConfusionMatrix.ConfusionMatrix()
     content = extractGroundTruth("Input/Shapes2.txt")
@@ -264,11 +267,13 @@ if __name__ == '__main__':
     print("------------------------------------------------------------------------------")
     
     #Shapes_Noise_Easy_Validation
-    print "Shapes_Noise_Easy_Validation\n" 
-    imageFilter = ImageFilter.ImageFilter()
-    image = misc.imread('Input/Shapes_Noise_Easy_Validation.png')
-    image = imageFilter.MedianFilter(image, 5)
-    misc.imsave('Input/Shapes_Noise_Easy_ValidationFiltered.png', image)
+    print "Shapes_Noise_Easy_Validation\n"
+    
+    if not os.path.exists('Input/Shapes_Noise_Easy_ValidationFiltered.png'):
+        imageFilter = ImageFilter.ImageFilter()
+        image = misc.imread('Input/Shapes_Noise_Easy_Validation.png')
+        image = imageFilter.MedianFilter(image, 5)
+        misc.imsave('Input/Shapes_Noise_Easy_ValidationFiltered.png', image)
     
     matrix = ConfusionMatrix.ConfusionMatrix()
     content = extractGroundTruth("Input/Shapes_Noise_Easy_Validation.txt")
@@ -292,13 +297,15 @@ if __name__ == '__main__':
     
     #Shapes_Noise_Heavy_Validation
     print "Shapes_Noise_Heavy_Validation\n" 
-    imageFilter = ImageFilter.ImageFilter()
-    image = misc.imread('Input/Shapes_Noise_Heavy_Validation.png')
-    image = imageFilter.MedianFilter(image, 5)
-    misc.imsave('Input/Shapes_Noise_Heavy_ValidationFiltered.png', image)
+    
+    if not os.path.exists('Input/Shapes_Noise_Heavy_ValidationFiltered.png'):
+        imageFilter = ImageFilter.ImageFilter()
+        image = misc.imread('Input/Shapes_Noise_Heavy_Validation.png')
+        image = imageFilter.MedianFilter(image, 5)
+        misc.imsave('Input/Shapes_Noise_Heavy_ValidationFiltered.png', image)
     
     matrix = ConfusionMatrix.ConfusionMatrix()
-    content = extractGroundTruth("Input/Shapes_Noise_Easy_Validation.txt")
+    content = extractGroundTruth("Input/Shapes_Noise_Heavy_Validation.txt")
     image = Image.open('Input/Shapes_Noise_Heavy_ValidationFiltered.png')
     result = extractor.boundingCircle(image)
     
@@ -319,10 +326,11 @@ if __name__ == '__main__':
     
     #Shapes_Noise_Medium_Validation
     print "Shapes_Noise_Medium_Validation\n" 
-    imageFilter = ImageFilter.ImageFilter()
-    image = misc.imread('Input/Shapes_Noise_Medium_Validation.png')
-    image = imageFilter.MedianFilter(image, 5)
-    misc.imsave('Input/Shapes_Noise_Medium_ValidationFiltered.png', image)
+    if not os.path.exists('Input/Shapes_Noise_Medium_ValidationFiltered.png'):
+        imageFilter = ImageFilter.ImageFilter()
+        image = misc.imread('Input/Shapes_Noise_Medium_Validation.png')
+        image = imageFilter.MedianFilter(image, 5)
+        misc.imsave('Input/Shapes_Noise_Medium_ValidationFiltered.png', image)
     
     matrix = ConfusionMatrix.ConfusionMatrix()
     content = extractGroundTruth("Input/Shapes_Noise_Medium_Validation.txt")
