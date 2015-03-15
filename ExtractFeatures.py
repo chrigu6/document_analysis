@@ -95,6 +95,8 @@ class ExtractFeatures:
         shifts = 0
         lastPositive = True
         
+        #print changes
+        
         for element in changes:
             if element != 0:
                 if element > 0 and lastPositive == False:
@@ -107,7 +109,7 @@ class ExtractFeatures:
         
         
 
-        if shifts > 1:
+        if shifts > 2:
             return "star"
         else:
             return "triangle"

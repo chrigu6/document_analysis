@@ -29,12 +29,19 @@ def extractGroundTruth(file):
 
 if __name__ == '__main__':
     results = []
+    extractor = ExtractFeatures.ExtractFeatures()
     
+    """
+    image = Image.open('Input/Shapes1N1.png')
+    image = image.convert('L')
+    pic = image.load()
+    extractor.starTriangleChecker(pic, 700, 900)
+    
+    """
     #Shapes0
     print "Shapes0\n"
     matrix = ConfusionMatrix.ConfusionMatrix()
     content = extractGroundTruth("Input/Shapes0.txt")
-    extractor = ExtractFeatures.ExtractFeatures()
     image = Image.open('Input/Shapes0.png')
     result = extractor.boundingCircle(image)
     
@@ -46,7 +53,7 @@ if __name__ == '__main__':
         else:
             print(i, content[i], result[0][i], result[1][i])
     
-    results.append(str(float(correct)/float(80)))   
+    results.append(float(correct)/float(80))   
      
     print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
     print 'Confusion-Matrix:\n'
@@ -68,7 +75,7 @@ if __name__ == '__main__':
         else:
             print(i, content[i], result[0][i], result[1][i])
     
-    results.append(str(float(correct)/float(80)))   
+    results.append(float(correct)/float(80))   
      
     print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
     print 'Confusion-Matrix:\n'
@@ -90,7 +97,7 @@ if __name__ == '__main__':
         else:
             print(i, content[i], result[0][i], result[1][i])
     
-    results.append(str(float(correct)/float(80)))   
+    results.append(float(correct)/float(80))   
      
     print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
     print 'Confusion-Matrix:\n'
@@ -112,7 +119,7 @@ if __name__ == '__main__':
         else:
             print(i, content[i], result[0][i], result[1][i])
     
-    results.append(str(float(correct)/float(80)))   
+    results.append(float(correct)/float(80))   
     
     print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
     print 'Confusion-Matrix:\n'
@@ -139,7 +146,7 @@ if __name__ == '__main__':
         else:
             print(i, content[i], result[0][i], result[1][i])
     
-    results.append(str(float(correct)/float(80)))   
+    results.append(float(correct)/float(80))   
      
     print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
     print 'Confusion-Matrix:\n'
@@ -161,13 +168,186 @@ if __name__ == '__main__':
         else:
             print(i, content[i], result[0][i], result[1][i])
     
-    results.append(str(float(correct)/float(80)))   
+    results.append(float(correct)/float(80))   
        
     print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
     print 'Confusion-Matrix:\n'
     print matrix  
     print("------------------------------------------------------------------------------")
-
     
+    #Shapes_Border_Easy_Validation
+    print "Shapes_Border_Easy_Validation\n" 
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Border_Easy_Validation.txt")
+    image = Image.open('Input/Shapes_Border_Easy_Validation.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    #Shapes_Border_Heavy_Validation
+    print "Shapes_Border_Heavy_Validation\n" 
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Border_Heavy_Validation.txt")
+    image = Image.open('Input/Shapes_Border_Heavy_Validation.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    #Shapes_Border_Medium_Validation
+    print "Shapes_Border_Medium_Validation\n" 
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Border_Medium_Validation.txt")
+    image = Image.open('Input/Shapes_Border_Medium_Validation.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    #Shapes_Clean_Validation
+    print "Shapes_Clean_Validation\n" 
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Clean_Validation.txt")
+    image = Image.open('Input/Shapes_Clean_Validation.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    #Shapes_Noise_Easy_Validation
+    print "Shapes_Noise_Easy_Validation\n" 
+    imageFilter = ImageFilter.ImageFilter()
+    image = misc.imread('Input/Shapes_Noise_Easy_Validation.png')
+    image = imageFilter.MedianFilter(image, 5)
+    misc.imsave('Input/Shapes_Noise_Easy_ValidationFiltered.png', image)
+    
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Noise_Easy_Validation.txt")
+    image = Image.open('Input/Shapes_Noise_Easy_ValidationFiltered.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    #Shapes_Noise_Heavy_Validation
+    print "Shapes_Noise_Heavy_Validation\n" 
+    imageFilter = ImageFilter.ImageFilter()
+    image = misc.imread('Input/Shapes_Noise_Heavy_Validation.png')
+    image = imageFilter.MedianFilter(image, 5)
+    misc.imsave('Input/Shapes_Noise_Heavy_ValidationFiltered.png', image)
+    
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Noise_Easy_Validation.txt")
+    image = Image.open('Input/Shapes_Noise_Heavy_ValidationFiltered.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    #Shapes_Noise_Medium_Validation
+    print "Shapes_Noise_Medium_Validation\n" 
+    imageFilter = ImageFilter.ImageFilter()
+    image = misc.imread('Input/Shapes_Noise_Medium_Validation.png')
+    image = imageFilter.MedianFilter(image, 5)
+    misc.imsave('Input/Shapes_Noise_Medium_ValidationFiltered.png', image)
+    
+    matrix = ConfusionMatrix.ConfusionMatrix()
+    content = extractGroundTruth("Input/Shapes_Noise_Medium_Validation.txt")
+    image = Image.open('Input/Shapes_Noise_Medium_ValidationFiltered.png')
+    result = extractor.boundingCircle(image)
+    
+    correct = 0
+    for i in range(0, 80):
+        matrix.addResult([content[i],result[0][i]])
+        if content[i] == result[0][i]:
+            correct += 1
+        else:
+            print(i, content[i], result[0][i], result[1][i])
+    
+    results.append(float(correct)/float(80))   
+       
+    print 'Recognition Ratio: ' + str(float(correct)/float(80)) + '\n'
+    print 'Confusion-Matrix:\n'
+    print matrix  
+    print("------------------------------------------------------------------------------")
+    
+    
+    
+    
+    print "Total Recognition Ratio: " + str(sum(results)/len(results))
+
     
     
