@@ -3,10 +3,8 @@ Created on Mar 4, 2015
 
 @author: chrigu
 '''
-
-import sys
-import scipy.ndimage as ndi
 import numpy as np
+import math
 
 class ImageFilter:
 
@@ -26,9 +24,8 @@ class ImageFilter:
                     for y in range(0, windowSize):
                         window[i] = image[rowIndex + x - windowCenterX][columnIndex + y - windowCenterY]
                         i = i+1
-                window = np.sort(window)
-                result[rowIndex][columnIndex] = window[(windowSize * windowSize) / 2]
-
+                
+                result[rowIndex][columnIndex] = math.floor(np.median(window))
         return result
 
 
@@ -58,6 +55,7 @@ class ImageFilter:
         result = np.full_like(image, 255)
         window = np.ones((2 * sigma+1)**2)
         kernel = self.gaussianKernel(sigma)
+        print kernel.sum(kernel)
         print kernel
 
         for row in range(sigma, image.shape[0]-sigma):
@@ -69,6 +67,6 @@ class ImageFilter:
                             image[row + x - sigma][column + y - sigma] * kernel[x][y]
                         )
                         i += 1
-                result[row][column] = reduce(lambda x, y: x*y, window)
+                result[row][column] = reduce(lambda x, y: x*y, window)/((2 * sigma+1)**2)
 
         return result
