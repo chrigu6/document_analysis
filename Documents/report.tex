@@ -29,11 +29,11 @@
 	
 	\subsection{The algorithm}
 	
-	\par{Our approach to this problem was a bounding circle. For every 100x100 image the algorithm visits every pixel. Then it checks if the pixel is black, if so the algorithm adds one to the sum of black pixels. Furthermore the algorithm calculates the distance (radius) to the center of the 100x100 image and always keeps the radius of the point furthest away. After visiting every pixel the algorithm calculates the circle area with the radius of the point furthest away and computes the ratio between this area and the number of black pixels, e.g. the area of the shape itself. }
+	\par{Our approach to this problem was a bounding circle. For every 100x100 image the algorithm visits every pixel. Then it checks if the pixel is black, if so the algorithm adds one to the sum of black pixels. Furthermore the algorithm calculates the distance (radius) to the center of the 100x100 image and always keeps the radius of the point furthest away. After visiting every pixel the algorithm calculates the circle area with the radius of the point furthest away and computes the ratio between this area and the number of black pixels, e.g. the area of the shape itself. For a better distinction between stars and triangles we looked at the increase and decrease of black pixels per line and used that as a second feature.}
 	
 	\subsection{Pre-Processing}
 	
-	\par{}
+	\par{For Pre-Processing we implemented a median filter to remove noise. The filter produces excellent results – the filtered image shows no signs of noise and recognition ratio on the filtered image is as good as on the same image without any noise. Alas our current implementation of the median filter uses four for-loops and is therefor really time-consuming and could therefor be improved. To solve the problem with fuzzy edges we tried to blur the image with a Gaussian filter, extract the edges of that image and added them up to the original image. Unfortunately the recognition rates on those images were not satisfying.}
 	
 	\subsection{Results}
 	
