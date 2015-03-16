@@ -1,0 +1,43 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{24.0pt}
+
+\rfoot{
+	\begin{tabular}{r}
+		Document Analysis\\
+	\end{tabular}
+}
+
+\lhead{
+	\begin{tabular}{l}
+		SS 15\\
+	\end{tabular}
+}
+
+\rhead{
+	\begin{tabular}{l}
+		Christoph Reinhart, Nicolas Spycher
+	\end{tabular}
+}
+
+\begin{document}
+
+	\section{Report Shape Recognition}
+	
+	\subsection{The algorithm}
+	
+	\par{Our approach to this problem was a bounding circle. For every 100x100 image the algorithm visits every pixel. Then it checks if the pixel is black, if so the algorithm adds one to the sum of black pixels. Furthermore the algorithm calculates the distance (radius) to the center of the 100x100 image and always keeps the radius of the point furthest away. After visiting every pixel the algorithm calculates the circle area with the radius of the point furthest away and computes the ratio between this area and the number of black pixels, e.g. the area of the shape itself. }
+	
+	\subsection{Pre-Processing}
+	
+	\par{}
+	
+	\subsection{Results}
+	
+	\par{The algorithm yields perfect results on clean images. Furthermore we achieved acceptable results with salt and pepper noise when we applied a median filter. The biggest problem with our algorithm are unsharp edges. We were not able to clean those edges with pre-processing. We tried applying a gaussan blur and the re-binarize the image but the recognition was the same or even poorer. This is why we decided to add another feature extraction, since we saw that most of the time it was the star that got confused with the triangle. We were able to improve the recognition but not to perfect results.}
+	
+
+\end{document}
