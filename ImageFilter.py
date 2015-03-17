@@ -24,7 +24,7 @@ class ImageFilter:
                     for y in range(0, windowSize):
                         window[i] = image[rowIndex + x - windowCenterX][columnIndex + y - windowCenterY]
                         i = i+1
-                
+
                 result[rowIndex][columnIndex] = math.floor(np.median(window))
         return result
 
@@ -70,3 +70,20 @@ class ImageFilter:
                 result[row][column] = reduce(lambda x, y: x*y, window)/((2 * sigma+1)**2)
 
         return result
+
+    def meanFilter(self, image, sigma):
+        for row in range(sigma, image.shape[0]-sigma):
+            for column in range(sigma, image.shape[1]):
+                pValue = 0
+                for x in range(-sigma+1,sigma):
+                    for y in range(-sigma+1,sigma):
+                        pValue += image[row+x-sigma,column+y-sigma]
+                averageValue = pValue / 9.0
+
+                if averageValue > 30:
+                    image[row, column] == 255
+
+                pValue = 0
+        return image
+
+
