@@ -38,6 +38,220 @@
 	\subsection{Results}
 	
 	\par{The algorithm yields perfect results on clean images. Furthermore we achieved acceptable results with salt and pepper noise when we applied a median filter. The biggest problem with our algorithm are unsharp edges. We were not able to clean those edges with pre-processing. We tried applying a gaussan blur and the re-binarize the image but the recognition was the same or even poorer. This is why we decided to add another feature extraction, since we saw that most of the time it was the star that got confused with the triangle. We were able to improve the recognition but not to perfect results.}
+
+	\subsection{Validation Results}
+	
+	\begin{verbatim}Shapes_Border_Easy_Test
+
+(2, 'circle', 'square', 0.9261972617454015)
+(3, 'triangle', 'star', 0.4316282056652202)
+(15, 'circle', 'square', 0.923098669932993)
+(30, 'circle', 'square', 0.9468857264095434)
+(32, 'triangle', 'star', 0.4098239784616305)
+(34, 'circle', 'square', 0.8941288937746931)
+(36, 'triangle', 'star', 0.4141942166530882)
+(39, 'circle', 'square', 0.9346770487461609)
+(42, 'circle', 'square', 0.9426384847284335)
+(49, 'triangle', 'star', 0.4324500145897431)
+(50, 'triangle', 'star', 0.45067637350774326)
+(55, 'triangle', 'star', 0.4099934639486959)
+(56, 'circle', 'square', 0.9196070053651606)
+(60, 'circle', 'square', 0.8869758626244955)
+(62, 'circle', 'square', 0.9414907610647222)
+(68, 'circle', 'square', 0.871286184809646)
+(72, 'circle', 'square', 0.9219441781178188)
+Recognition Ratio: 0.7875
+
+Confusion-Matrix:
+
+            star        circle      triangle    square      
+star        1.000       0.000       0.000       0.000       
+circle      0.000       0.214       0.000       0.786       
+triangle    0.286       0.000       0.714       0.000       
+square      0.000       0.000       0.000       1.000       
+
+------------------------------------------------------------------------------
+Shapes_Border_Heavy_Test
+
+(0, 'triangle', 'star', 0.39985444129604264)
+(2, 'square', 'star', 0.5735881117371278)
+(4, 'triangle', 'star', 0.3865978202439811)
+(7, 'circle', 'square', 0.8899944417698789)
+(10, 'circle', 'square', 0.9350591734594668)
+(12, 'triangle', 'star', 0.41275007615077125)
+(13, 'circle', 'square', 0.930404142730654)
+(15, 'circle', 'square', 0.9418484303520382)
+(16, 'triangle', 'star', 0.41810890089711705)
+(18, 'triangle', 'star', 0.42994377827884245)
+(19, 'circle', 'square', 0.9234523475843083)
+(21, 'triangle', 'star', 0.3991778032142672)
+(24, 'triangle', 'star', 0.4274577524648896)
+(25, 'circle', 'square', 0.9332096898470662)
+(26, 'circle', 'square', 0.9476740655574768)
+(27, 'triangle', 'star', 0.4041759188958083)
+(32, 'triangle', 'star', 0.42226375938807353)
+(37, 'square', 'star', 0.5844049014478427)
+(38, 'circle', 'square', 0.9114681163993545)
+(39, 'triangle', 'star', 0.4290141209362065)
+(40, 'circle', 'square', 0.857447255907586)
+(41, 'triangle', 'star', 0.43394082443014736)
+(45, 'triangle', 'star', 0.44492648535467627)
+(48, 'circle', 'square', 0.9191433399863305)
+(50, 'triangle', 'star', 0.40262933024549585)
+(53, 'circle', 'square', 0.8772620463225271)
+(54, 'triangle', 'star', 0.41370726348451836)
+(56, 'triangle', 'star', 0.4280943163165674)
+(57, 'circle', 'square', 0.9327664251796315)
+(62, 'triangle', 'star', 0.4166412841450254)
+(68, 'circle', 'square', 0.9482414352619072)
+(69, 'circle', 'square', 0.9290141633930458)
+(70, 'triangle', 'star', 0.41121028283019107)
+(71, 'square', 'star', 0.5995460326826458)
+(72, 'circle', 'square', 0.8928556217899072)
+(73, 'circle', 'square', 0.8619924655050097)
+(74, 'circle', 'square', 0.9148906791571845)
+(78, 'triangle', 'star', 0.41569380185784144)
+Recognition Ratio: 0.525
+
+Confusion-Matrix:
+
+            triangle    star        square      circle      
+triangle    0.000       1.000       0.000       0.000       
+star        0.000       1.000       0.000       0.000       
+square      0.000       0.130       0.870       0.000       
+circle      0.000       0.000       0.944       0.056       
+
+------------------------------------------------------------------------------
+Shapes_Border_Medium_Test
+
+(4, 'circle', 'square', 0.8887212022251436)
+(5, 'triangle', 'star', 0.4167910672969798)
+(6, 'circle', 'square', 0.8433571211261258)
+(7, 'circle', 'square', 0.9489965758638831)
+(8, 'triangle', 'star', 0.4416142277601055)
+(9, 'triangle', 'star', 0.42424422728635797)
+(11, 'triangle', 'star', 0.42333104700016627)
+(12, 'circle', 'square', 0.9433601473107684)
+(14, 'circle', 'square', 0.902215919438133)
+(15, 'circle', 'square', 0.8259592736320777)
+(16, 'circle', 'square', 0.9312676847111611)
+(19, 'triangle', 'star', 0.4246085835956889)
+(20, 'circle', 'square', 0.949668338118582)
+(26, 'triangle', 'star', 0.4505309158293653)
+(28, 'triangle', 'star', 0.4278084870310147)
+(31, 'circle', 'square', 0.9311384557180475)
+(32, 'triangle', 'star', 0.43537527994606373)
+(37, 'circle', 'square', 0.9451597511536516)
+(39, 'circle', 'square', 0.8947088692733575)
+(40, 'circle', 'square', 0.9250030880554599)
+(41, 'triangle', 'star', 0.4189028446904913)
+(43, 'triangle', 'star', 0.425068876100489)
+(44, 'triangle', 'star', 0.41457921761498595)
+(46, 'circle', 'square', 0.853521199236182)
+(47, 'triangle', 'star', 0.41597852139471614)
+(49, 'circle', 'square', 0.9317117609709072)
+(50, 'circle', 'square', 0.947936910612361)
+(52, 'square', 'star', 0.5934302899473447)
+(56, 'triangle', 'star', 0.4127891262867502)
+(61, 'circle', 'square', 0.9395709185666293)
+(62, 'circle', 'square', 0.8994236641634511)
+(64, 'triangle', 'star', 0.42013387739948943)
+(65, 'triangle', 'star', 0.4329231728472375)
+(67, 'triangle', 'star', 0.42084510615803833)
+(68, 'triangle', 'star', 0.41907465099249586)
+(69, 'triangle', 'star', 0.4121032409129629)
+(78, 'square', 'triangle', 0.579346021220325)
+Recognition Ratio: 0.5375
+
+Confusion-Matrix:
+
+            star        square      circle      triangle    
+star        1.000       0.000       0.000       0.000       
+square      0.059       0.882       0.000       0.059       
+circle      0.000       0.895       0.105       0.000       
+triangle    0.947       0.000       0.000       0.053       
+
+------------------------------------------------------------------------------
+Shapes_Clean_Test
+
+Recognition Ratio: 1.0
+
+Confusion-Matrix:
+
+            circle      square      triangle    star        
+circle      1.000       0.000       0.000       0.000       
+square      0.000       1.000       0.000       0.000       
+triangle    0.000       0.000       1.000       0.000       
+star        0.000       0.000       0.000       1.000       
+
+------------------------------------------------------------------------------
+Shapes_Noise_Easy_Test
+
+(44, 'circle', 'square', 0.9498367003724313)
+(51, 'triangle', 'star', 0.49728412407580885)
+(53, 'triangle', 'star', 0.492256180864152)
+Recognition Ratio: 0.9625
+
+Confusion-Matrix:
+
+            square      star        circle      triangle    
+square      1.000       0.000       0.000       0.000       
+star        0.000       1.000       0.000       0.000       
+circle      0.036       0.000       0.964       0.000       
+triangle    0.000       0.105       0.000       0.895       
+
+------------------------------------------------------------------------------
+Shapes_Noise_Heavy_Test
+
+(3, 'circle', 'square', 0.8556403362555106)
+(5, 'triangle', 'star', 0.4552109545861825)
+(9, 'circle', 'square', 0.9415947215041072)
+(12, 'triangle', 'star', 0.4600370029280667)
+(16, 'circle', 'square', 0.915140922778398)
+(24, 'circle', 'square', 0.8134585980252428)
+(29, 'triangle', 'star', 0.447464376743987)
+(41, 'circle', 'square', 0.8848430781072347)
+(54, 'circle', 'square', 0.8841941282883075)
+(59, 'circle', 'square', 0.9349281396708825)
+(60, 'triangle', 'star', 0.4485096601735714)
+(61, 'circle', 'square', 0.9432841749105015)
+(63, 'circle', 'square', 0.8906836264775794)
+(77, 'circle', 'square', 0.9000135759509738)
+(78, 'triangle', 'star', 0.478729971907577)
+Recognition Ratio: 0.8125
+
+Confusion-Matrix:
+
+            square      triangle    circle      star        
+square      1.000       0.000       0.000       0.000       
+triangle    0.000       0.792       0.000       0.208       
+circle      0.714       0.000       0.286       0.000       
+star        0.000       0.000       0.000       1.000       
+
+------------------------------------------------------------------------------
+Shapes_Noise_Medium_Test
+
+(1, 'triangle', 'star', 0.4609932893512116)
+(15, 'circle', 'square', 0.9331914224217474)
+(19, 'circle', 'square', 0.9409498324689758)
+(21, 'circle', 'square', 0.9212262588377942)
+(53, 'circle', 'square', 0.9456132716386758)
+(56, 'circle', 'square', 0.9309474068525934)
+(61, 'circle', 'square', 0.9021711138800256)
+(63, 'circle', 'square', 0.9345578258356094)
+Recognition Ratio: 0.9
+
+Confusion-Matrix:
+
+            triangle    square      star        circle      
+triangle    0.947       0.000       0.053       0.000       
+square      0.000       1.000       0.000       0.000       
+star        0.000       0.000       1.000       0.000       
+circle      0.000       0.350       0.000       0.650       
+
+------------------------------------------------------------------------------
+Total Recognition Ratio: 0.789285714286
+\end{verbatim}
 	
 
 \end{document}
