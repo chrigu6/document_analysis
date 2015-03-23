@@ -1,7 +1,7 @@
 from PIL import Image
 
-im = Image.open("DC/DC1/DC1.1/3243a181-1.jpg")
-im = im.convert("1")
+original = Image.open("DC/DC1/DC1.1/3243a181-1.jpg")
+im = original.convert("1")
 
 def horizontalSmearing(image, limit):
     pic = image.load()
@@ -40,20 +40,162 @@ def combine(image1, image2):
     combinedImage = newImage.load()
     for y in range(0, image1.size[1]):
         for x in range(0, image1.size[0]):
-            combined = pic1[x,y] + pic2[x,y]
-            if combined == 0:
-                combinedImage[x,y] = 0
+            combinedImage[x,y] = max(pic1[x,y],pic2[x,y])
     return newImage
 
 
 
+def connectedComponents(image):
+    components = []
+    pic = image.load()
+    for y in range(0, image.size[1]):
+        for x in range(0, image.size[0]):
+            if pic[x,y] == 0:
+                #Check if pixel allready belongs to a component
+                if not checkRange(components,x,y) and not isBorderPixel(image,x,y):
+                    components.append(getComponent(pic,x,y))
+                    
+    return components
 
-horizontalImage = horizontalSmearing(im, 2)
-horizontalImage.save("horizontal_processed.png")
 
-verticalImage = verticalSmearing(horizontalImage, 3)
-verticalImage.save("vertical_processed.png")
+def isBorderPixel(image, x, y):
+    return x == 0 or y == 0 or x == image.size[0] or y == image.size[1]
 
-combinedImage = combine(horizontalImage, verticalImage)
-combinedImage.save("combined_processed.png")
+def getComponent(pic,x,y):
+    component = Component()
+    component.update(x,y)
+    p0X = x
+    p0Y = y
+    q0X = x
+    q0Y = y-1
+    d =  0
+    pX = x
+    pY = y
+    rotated = 0
+    
+    while (True):
+        p1 = getStepfromDirection((d+1)%8, pX, pY)
+        if pic[p1[0],p1[1]] == 0:
+            component.update(p1[0],p1[1])
+            pX = p1[0]
+            pY = p1[1]
+            #One step forward and one step left
+            d = (d + 2) % 8
+            rotated = 0
+        else :
+            p2 = getStepfromDirection(d, pX, pY)
+            if pic[p2[0],p2[1]] == 0:
+                component.update(p2[0],p2[1])
+                pX = p2[0]
+                pY = p2[1]
+                rotated = 0
+            
+            else:
+                p3 = getStepfromDirection((d+7)%8, pX, pY)
+                if pic[p3[0],p3[1]] == 0:
+                    component.update(p3[0],p3[1])
+                    pX = p3[0]
+                    pY = p3[1]
+                    rotated = 0
+                
+                else:
+                    if rotated > 3:
+                        return component
+                    else:
+                        d = (d+6)%8
+                        rotated = rotated + 1
+                        
+    
+        if p0X == pX and p0Y == pY:
+            return component
+                
 
+            
+            
+        
+        
+
+def getStepfromDirection(d,x,y):
+    if d == 0:
+        return [x+1,y]
+    if d == 1:
+        return [x+1,y-1]
+    if d == 2:
+        return [x,y-1]
+    if d == 3:
+        return [x-1,y-1]
+    if d == 4:
+        return [x-1,y]
+    if d == 5:
+        return [x-1,y+1]
+    if d == 6:
+        return [x,y+1]
+    if d == 7:
+        return [x+1,y+1]
+    
+    return "Fail"
+            
+        
+    
+    
+    
+    
+
+            
+def checkRange(components, x, y):
+    for c in components:
+        if(c.isinRange(x,y)):
+            return True
+    
+    return False
+
+def drawBorder(components, image):
+    
+    rgb_img = image.convert('RGB')
+    pic = rgb_img.load()
+
+    for c in components:
+        for x in range(c.minX,c.maxX):
+            pic[x,c.minY] = (0,0,255)
+            pic[x,c.maxY] = (0,0,255)
+        
+        for y in range(c.minY,c.maxY):
+            pic[c.minX,y] = (0,0,255)
+            pic[c.maxX,y] = (0,0,255)
+    
+    return rgb_img
+            
+                         
+            
+
+
+class Component:
+    minX = 999999999
+    maxX = 0
+    minY = 999999999
+    maxY = 0
+    
+    def update(self, x, y):
+        if x < self.minX:
+            self.minX = x
+            
+        if x > self.maxX:
+            self.maxX = x
+            
+        if y < self.minY:
+            self.minY = y
+            
+        if y > self.maxY:
+            self.maxY = y
+            
+    def isinRange(self,x,y):
+        return x >= self.minX and x <= self.maxX and y >= self.minY and y <= self.maxY
+
+horizontalSmear = horizontalSmearing(im, 2) 
+components = connectedComponents(horizontalSmear)
+horizontalSmear.save("horizontal_processed.png")
+
+
+rgbimg = drawBorder(components, original)
+rgbimg.save("farbe.png")
+    
