@@ -51,8 +51,9 @@ def connectedComponents(image):
     for y in range(0, image.size[1]):
         for x in range(0, image.size[0]):
             if pic[x,y] == 0:
-                #Check if pixel allready belongs to a component
+                #Check if pixel allready belongs to a component, ignore pixel on the border of the image
                 if not checkRange(components,x,y) and not isBorderPixel(image,x,y):
+                    #If the pixel doesn't belong to a component, create and add a new component
                     components.append(getComponent(pic,x,y))
                     
     return components
@@ -74,15 +75,17 @@ def getComponent(pic,x,y):
     rotated = 0
     
     while (True):
+        #Inspired by: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/theo.html
+        #Move one square towards d and one to the left
         p1 = getStepfromDirection((d+1)%8, pX, pY)
         if pic[p1[0],p1[1]] == 0:
             component.update(p1[0],p1[1])
             pX = p1[0]
             pY = p1[1]
-            #One step forward and one step left
             d = (d + 2) % 8
             rotated = 0
         else :
+            #Move one square towards d
             p2 = getStepfromDirection(d, pX, pY)
             if pic[p2[0],p2[1]] == 0:
                 component.update(p2[0],p2[1])
@@ -91,6 +94,7 @@ def getComponent(pic,x,y):
                 rotated = 0
             
             else:
+                #Move one square towards d and one to the right
                 p3 = getStepfromDirection((d+7)%8, pX, pY)
                 if pic[p3[0],p3[1]] == 0:
                     component.update(p3[0],p3[1])
@@ -99,9 +103,11 @@ def getComponent(pic,x,y):
                     rotated = 0
                 
                 else:
+                    #If you rotated three time, the pixel is isolated
                     if rotated > 3:
                         return component
                     else:
+                        #if all the pixel towards d, left and right of d are not black rotate 90° to the right
                         d = (d+6)%8
                         rotated = rotated + 1
                         
@@ -109,12 +115,6 @@ def getComponent(pic,x,y):
         if p0X == pX and p0Y == pY:
             return component
                 
-
-            
-            
-        
-        
-
 def getStepfromDirection(d,x,y):
     if d == 0:
         return [x+1,y]
@@ -134,14 +134,7 @@ def getStepfromDirection(d,x,y):
         return [x+1,y+1]
     
     return "Fail"
-            
-        
-    
-    
-    
-    
-
-            
+               
 def checkRange(components, x, y):
     for c in components:
         if(c.isinRange(x,y)):
@@ -165,9 +158,6 @@ def drawBorder(components, image):
     
     return rgb_img
             
-                         
-            
-
 
 class Component:
     minX = 999999999
@@ -191,10 +181,11 @@ class Component:
     def isinRange(self,x,y):
         return x >= self.minX and x <= self.maxX and y >= self.minY and y <= self.maxY
 
+
+#Code for Execution
 horizontalSmear = horizontalSmearing(im, 2) 
 components = connectedComponents(horizontalSmear)
 horizontalSmear.save("horizontal_processed.png")
-
 
 rgbimg = drawBorder(components, original)
 rgbimg.save("farbe.png")
