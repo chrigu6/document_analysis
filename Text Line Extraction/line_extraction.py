@@ -1,6 +1,6 @@
 from PIL import Image
 
-original = Image.open("DC/DC1/DC1.1/3243a181-1.jpg")
+original = Image.open("DC/DC1/DC1.1/AA03-1.jpg")
 im = original.convert("1")
 
 def horizontalSmearing(image, limit):
@@ -107,7 +107,7 @@ def getComponent(pic,x,y):
                     if rotated > 3:
                         return component
                     else:
-                        #if all the pixel towards d, left and right of d are not black rotate 90° to the right
+                        #if all the pixel towards d, left and right of d are not black rotate 90 degrees to the right
                         d = (d+6)%8
                         rotated = rotated + 1
                         
@@ -184,8 +184,8 @@ class Component:
 
 #Code for Execution
 horizontalSmear = horizontalSmearing(im, 2) 
-components = connectedComponents(horizontalSmear)
 horizontalSmear.save("horizontal_processed.png")
+components = connectedComponents(horizontalSmear)
 
 rgbimg = drawBorder(components, original)
 rgbimg.save("farbe.png")
