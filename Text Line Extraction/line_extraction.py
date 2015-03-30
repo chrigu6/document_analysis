@@ -1,7 +1,21 @@
 from PIL import Image
+import os
 
-original = Image.open("DC/DC1/DC1.1/AA03-1.jpg")
-im = original.convert("1")
+original = Image.open("DC/DC1/DC1.1/3243a181-1.jpg")
+im = original.convert("L")
+
+
+def binarize(image):
+    pic = image.load()
+    for y in range(0, image.size[1]):
+        for x in range(0, image.size[0]):
+            if pic[x,y] < 127:
+                pic[x,y] = 0
+            else:
+                pic[x,y] = 255
+    return image
+
+
 
 def horizontalSmearing(image, limit):
     pic = image.load()
@@ -52,9 +66,10 @@ def connectedComponents(image):
         for x in range(0, image.size[0]):
             if pic[x,y] == 0:
                 #Check if pixel allready belongs to a component, ignore pixel on the border of the image
-                if not checkRange(components,x,y) and not isBorderPixel(image,x,y):
+                if not checkRange(components,x,y):
                     #If the pixel doesn't belong to a component, create and add a new component
-                    components.append(getComponent(pic,x,y))
+                    components.append(getComponent(image,x,y))
+    removeNested(components)
                     
     return components
 
@@ -62,7 +77,17 @@ def connectedComponents(image):
 def isBorderPixel(image, x, y):
     return x == 0 or y == 0 or x == image.size[0] or y == image.size[1]
 
-def getComponent(pic,x,y):
+def isElement(size,pic,p):
+    if p[0] >= 0 and p[0] < size[0] and p[1] >= 0 and p[1] < size[1]:
+        return pic[p[0],p[1]] == 0
+    else:
+        return False
+    
+            
+
+def getComponent(image,x,y):
+    
+    pic = image.load()
     component = Component()
     component.update(x,y)
     p0X = x
@@ -78,7 +103,7 @@ def getComponent(pic,x,y):
         #Inspired by: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/theo.html
         #Move one square towards d and one to the left
         p1 = getStepfromDirection((d+1)%8, pX, pY)
-        if pic[p1[0],p1[1]] == 0:
+        if isElement(image.size, pic, p1):
             component.update(p1[0],p1[1])
             pX = p1[0]
             pY = p1[1]
@@ -87,7 +112,7 @@ def getComponent(pic,x,y):
         else :
             #Move one square towards d
             p2 = getStepfromDirection(d, pX, pY)
-            if pic[p2[0],p2[1]] == 0:
+            if isElement(image.size, pic, p2):
                 component.update(p2[0],p2[1])
                 pX = p2[0]
                 pY = p2[1]
@@ -96,7 +121,7 @@ def getComponent(pic,x,y):
             else:
                 #Move one square towards d and one to the right
                 p3 = getStepfromDirection((d+7)%8, pX, pY)
-                if pic[p3[0],p3[1]] == 0:
+                if isElement(image.size, pic, p3):
                     component.update(p3[0],p3[1])
                     pX = p3[0]
                     pY = p3[1]
@@ -142,6 +167,23 @@ def checkRange(components, x, y):
     
     return False
 
+def removeNested(components):
+    for checkedComponent in components:
+        for otherComponent in components:
+            if otherComponent.componentInRange(checkedComponent) and not otherComponent.isEqual(checkedComponent):
+                components.remove(checkedComponent)
+                break
+                
+def drawPolygon(components, image):
+    rgb_img = image.convert('RGB')
+    pic = rgb_img.load()
+
+    for c in components:
+        for p in c.points:
+            pic[p[0],p[1]] = (0,0,255)
+    
+    return rgb_img
+
 def drawBorder(components, image):
     
     rgb_img = image.convert('RGB')
@@ -160,12 +202,17 @@ def drawBorder(components, image):
             
 
 class Component:
+    
+    points = []
+    
     minX = 999999999
     maxX = 0
     minY = 999999999
     maxY = 0
     
     def update(self, x, y):
+        self.points.append([x,y])
+        
         if x < self.minX:
             self.minX = x
             
@@ -180,13 +227,27 @@ class Component:
             
     def isinRange(self,x,y):
         return x >= self.minX and x <= self.maxX and y >= self.minY and y <= self.maxY
-
+    
+    def componentInRange(self,c):
+        return c.minX >= self.minX and c.maxX <= self.maxX and c.minY >= self.minY and c.maxY <= self.maxY 
+    
+    def isEqual(self, c):
+        return self.minX == c.minX and self.maxX == c.maxX and self.minY == c.minY and self.maxY == c.maxY
 
 #Code for Execution
-horizontalSmear = horizontalSmearing(im, 2) 
-horizontalSmear.save("horizontal_processed.png")
-components = connectedComponents(horizontalSmear)
 
-rgbimg = drawBorder(components, original)
-rgbimg.save("farbe.png")
+for fn in os.listdir('Input'):
+    print "processing: " + fn
+    original = Image.open("Input/"+fn)
+    im = original.convert("L")
+    im = binarize(im)
+    im.save('Output/'+fn+"_binarized.png")
+
+    im = horizontalSmearing(im, 3)
+    im.save('Output/'+fn+"_smeared.png")
     
+    components = connectedComponents(im)
+    
+    rgbimg = drawBorder(components, original)
+    rgbimg.save('Output/'+fn+"_border.png")
+    print "Done with: " + fn
