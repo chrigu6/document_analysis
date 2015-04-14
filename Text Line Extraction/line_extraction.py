@@ -233,6 +233,12 @@ class Component:
     
     def isEqual(self, c):
         return self.minX == c.minX and self.maxX == c.maxX and self.minY == c.minY and self.maxY == c.maxY
+    
+    def enlarge(self, i, length, hight):
+        c.minX = max(0,c.minX - i) 
+        c.minY = max(0,c.minY - i)
+        c.maxX = min(length,c.maxX + i)
+        c.maxY = min(hight, c.maxY + i)
 
 #Code for Execution
 
@@ -243,14 +249,15 @@ for fn in os.listdir('Input'):
     original = Image.open("Input/"+fn)
     im = original.convert("L")
     im = binarize(im)
-    im.save('Output/'+fn+"_binarized.png")
+    #im.save('Output/'+fn+"_binarized.png")
 
     im = horizontalSmearing(im, 3)
-    im.save('Output/'+fn+"_smeared.png")
+    #im.save('Output/'+fn+"_smeared.png")
     
     components = connectedComponents(im)
     f = open("Output/" + fn+ ".txt","w")
     for c in components:
+        c.enlarge(2, im.size[0], im.size[1])
         f.write(str(i) + ", " + str(c.minX) + ", " + str(c.minY) + ", "  + str(c.maxX) + ", " + str(c.minY) + ", " + str(c.maxX) + ", " + str(c.maxY) + ", "  + str(c.minX) + ", " + str(c.maxY) + ", " + str(c.minX) + ", " + str(c.minY)+"\n" )
         i = i + 1
     
