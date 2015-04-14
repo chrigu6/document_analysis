@@ -40,7 +40,7 @@
 	
 	\subsubsection{Connected component}
 	
-	\par{The Connected component algorithm builds on the output of the RLSA. It takes the smeared image and draws a bounding box for each connected component. This method works satisfactorily for our document class. There are only some minor problems with list bullet points and some dots over some i's, because these don't get connected with the RSLA. A additional vertical smearing for each line could solve this issue. To adjust potential binarization errors, the bounding box can be enlarged a adjustable amount of pixels. }
+	\par{The Connected component algorithm builds on the output of the RLSA. It takes the smeared image and draws a bounding box for each connected component. This method works satisfactorily for our document class. There are only some minor problems with list bullet points and some dots over some i's, because these don't get connected with the RSLA. A additional vertical smearing for each line could solve this issue.}
 	
 	\subsection{Results}
 	
