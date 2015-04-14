@@ -236,7 +236,9 @@ class Component:
 
 #Code for Execution
 
+
 for fn in os.listdir('Input'):
+    i = 0
     print "processing: " + fn
     original = Image.open("Input/"+fn)
     im = original.convert("L")
@@ -247,7 +249,14 @@ for fn in os.listdir('Input'):
     im.save('Output/'+fn+"_smeared.png")
     
     components = connectedComponents(im)
+    f = open("Output/" + fn+ ".txt","w")
+    for c in components:
+        f.write(str(i) + ", " + str(c.minX) + ", " + str(c.minY) + ", "  + str(c.maxX) + ", " + str(c.minY) + ", " + str(c.maxX) + ", " + str(c.maxY) + ", "  + str(c.minX) + ", " + str(c.maxY) + ", " + str(c.minX) + ", " + str(c.minY)+"\n" )
+        i = i + 1
     
+    f.close()
     rgbimg = drawBorder(components, original)
     rgbimg.save('Output/'+fn+"_border.png")
     print "Done with: " + fn
+    
+    
