@@ -1,15 +1,12 @@
 from PIL import Image
 import os
 
-original = Image.open("DC/DC1/DC1.1/3243a181-1.jpg")
-im = original.convert("L")
-
 
 def binarize(image):
     pic = image.load()
     for y in range(0, image.size[1]):
         for x in range(0, image.size[0]):
-            if pic[x,y] < 127:
+            if pic[x,y] < 135:
                 pic[x,y] = 0
             else:
                 pic[x,y] = 255
@@ -249,15 +246,15 @@ for fn in os.listdir('Input'):
     original = Image.open("Input/"+fn)
     im = original.convert("L")
     im = binarize(im)
-    #im.save('Output/'+fn+"_binarized.png")
+    im.save('Output/'+fn+"_binarized.png")
 
     im = horizontalSmearing(im, 3)
-    #im.save('Output/'+fn+"_smeared.png")
+    im.save('Output/'+fn+"_smeared.png")
     
     components = connectedComponents(im)
     f = open("Output/" + fn+ ".txt","w")
     for c in components:
-        c.enlarge(2, im.size[0], im.size[1])
+        c.enlarge(2, im.size[0]-1, im.size[1]-1)
         f.write(str(i) + ", " + str(c.minX) + ", " + str(c.minY) + ", "  + str(c.maxX) + ", " + str(c.minY) + ", " + str(c.maxX) + ", " + str(c.maxY) + ", "  + str(c.minX) + ", " + str(c.maxY) + ", " + str(c.minX) + ", " + str(c.minY)+"\n" )
         i = i + 1
     
