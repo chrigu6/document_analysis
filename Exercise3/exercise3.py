@@ -62,7 +62,6 @@ def getAccuracy(testSet, predictions):
 
 
 def main():
-    txtToCVSParser('WashingtonDB.txt')
     # prepare data
     trainingSet=[]
     testSet=[]
@@ -81,7 +80,7 @@ def main():
     accuracy = getAccuracy(testSet, predictions)
     print('Accuracy: ' + repr(accuracy) + '%')
     
-def txtToCVSParser(filename):
+def txtToCSVParser(filename):
     with open(filename, 'rb') as txtFile:
         with open(filename + '.data', 'w+') as cvsFile:
             for line in txtFile:
@@ -89,11 +88,29 @@ def txtToCVSParser(filename):
                 cvsFile.write(line)
             cvsFile.close()
             
+def appendValueToDataSet(filename, function):
+    dataset = []
+    with open (filename, 'rU') as csvFile:
+        lines = csv.reader(csvFile)
+        dataset = list(lines)
+        
+    with open (filename, 'w+') as csvFile:    
+        writer = csv.writer(csvFile)    
+        for entry in dataset:
+            entry.append(function(entry[1]))
+            writer.writerow(entry)
+        
+        
+        
+            
+        
+        
+            
 def getValueOfChar(string):
     result = 0
     for char in string:
         result += ord(char)
     return result
                 
-    
-main()
+txtToCSVParser('WashingtonDB.txt') 
+appendValueToDataSet('WashingtonDB.txt.data', getValueOfChar)
