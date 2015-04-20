@@ -9,36 +9,47 @@ import random
 import math
 import operator
 from PIL import Image
+import os.path
 
 
-def loadDataset(filename, split, trainingSet=[], testSet=[], sequenceStart=0, length=0):
+def loadDataset(filename, trainingSet=[], sequenceStart=0, length=0):
     with open (filename, 'rb') as csvfile:
         lines = csv.reader(csvfile)
         dataset = list(lines)
         #x = numer of entries in a dataset, y = number of datafields in an entry In this case we are only interested in the first 4 fields
-        for x in range(len(dataset)-1):
+        for x in range(len(dataset)):
+            for y in range(sequenceStart, sequenceStart + length):
+                dataset[x][y] = float(dataset[x][y])
+            trainingSet.append(dataset[x])
+
+def loadRandomDataset(filename, split, trainingSet=[], testSet=[], sequenceStart=0, length=0):
+    with open (filename, 'rb') as csvfile:
+        lines = csv.reader(csvfile)
+        dataset = list(lines)
+        #x = numer of entries in a dataset, y = number of datafields in an entry In this case we are only interested in the first 4 fields
+        for x in range(len(dataset)):
             for y in range(sequenceStart, sequenceStart + length):
                 dataset[x][y] = float(dataset[x][y])
             if random.random() < split:
                 trainingSet.append(dataset[x])
             else:
                 testSet.append(dataset[x])
+    
+                
 
-
-def euclideanDistance(instance1, instance2, length):
+def euclideanDistance(instance1, instance2, startSequence, length):
     #length = dimension of the feature-vector aka number of extractet features
     #Euclidean Distance = root( (x1-y1)^ 2 + (x2-y2)^ 2 + .... + (xn-yn)^ 2)
     distance = 0
-    for x in range(length):
+    for x in range(startSequence,length):
         distance += pow((instance1[x] - instance2[x]), 2)
     return math.sqrt(distance)
 
 
-def getNeighbors(trainingSet, testInstance, k):
+def getNeighbors(trainingSet, testInstance, k, startSequence, length):
     distances = []
-    length = len(testInstance)-1
     for x in range(len(trainingSet)):
-        dist = euclideanDistance(testInstance, trainingSet[x], length)
+        dist = euclideanDistance(testInstance, trainingSet[x], startSequence, length)
         distances.append((trainingSet[x], dist))
     distances.sort(key=operator.itemgetter(1))
     neighbors = []
@@ -68,22 +79,23 @@ def getAccuracy(testSet, predictions):
     return (correct/float(len(testSet))) * 100.0
 
 
-def main():
+def main(filename, numberOfFeatures):
     # prepare data
     trainingSet = []
-    testSet = []
-    split = 0.67
-    loadDataset('iris.data', split, trainingSet, testSet, 0, 4)
+    loadDataset('WashingtonDB.txt.data', trainingSet, 0, numberOfFeatures)
     print 'Train set: ' + repr(len(trainingSet))
-    print 'Test set: ' + repr(len(testSet))
-    # generate predictions
     predictions = []
-    k = 3
-    for x in range(len(testSet)):
-        neighbors = getNeighbors(trainingSet, testSet[x], k)
-        result = getResponse(neighbors)
-        predictions.append(result)
-        print('> predicted=' + repr(result) + ', actual=' + repr(testSet[x][-1]))
+    k = 20
+    img = Image.open("data-week1/WashingtonDB/keywords/"+filename)
+    testSet = extractFeature(img, returnTiles(img, 6))
+    testSet.append("goal")
+    testSet.append(filename.split(".")[0])
+    testSet = [testSet]
+
+    neighbors = getNeighbors(trainingSet, testSet[0], k, 0, numberOfFeatures)
+    result = getResponse(neighbors)
+    predictions.append(result)
+    print('> predicted=' + repr(result) + ', actual=' + repr(testSet[0][-1]))
     accuracy = getAccuracy(testSet, predictions)
     print('Accuracy: ' + repr(accuracy) + '%')
 
@@ -97,7 +109,7 @@ def txtToCSVParser(filename):
             cvsFile.close()
 
 
-def appendValueToDataSet(filename, function):
+def appendValueToDataSet(filename):
     dataset = []
     with open(filename, 'rU') as csvFile:
         lines = csv.reader(csvFile)
@@ -106,17 +118,12 @@ def appendValueToDataSet(filename, function):
     with open(filename, 'w+') as csvFile:
         writer = csv.writer(csvFile)
         for entry in dataset:
-            entry.append(function(entry[1]))
-            writer.writerow(entry)
-
-def getValueOfChar(string):
-    result = 0
-    for char in string:
-        result += ord(char)
-    return result
-
-txtToCSVParser('WashingtonDB.txt')
-appendValueToDataSet('WashingtonDB.txt.data', getValueOfChar)
+            if(os.path.isfile("data-week1/WashingtonDB/words/" + entry[0]+".png")):
+                img = Image.open("data-week1/WashingtonDB/words/" + entry[0]+".png")
+                features = extractFeature(img, returnTiles(img, 6))
+                for f in features:
+                    entry.insert(0,f)
+                writer.writerow(entry)
 
 
 def extractFeature(image, squares):
@@ -157,5 +164,6 @@ def returnTiles(image, squares):
 
 
 if __name__ == "__main__":
-    img = Image.open("O-c-t-o-b-e-r.png")
-    print extractFeature(img, returnTiles(img, 6))
+    #txtToCSVParser('WashingtonDB.txt')
+    #appendValueToDataSet('WashingtonDB.txt.data')
+    main("O-c-t-o-b-e-r.png",6)
