@@ -55,6 +55,7 @@ def getNeighbors(trainingSet, testInstance, k, startSequence, length):
     neighbors = []
     for x in range(k):
         neighbors.append(distances[x][0])
+        print str(x) + "nearest neighbour: " + str(distances[x])
     return neighbors
 
 
@@ -87,7 +88,7 @@ def main(filename, numberOfFeatures):
     predictions = []
     k = 20
     img = Image.open("data-week1/WashingtonDB/keywords/"+filename)
-    testSet = extractFeature(img, returnTiles(img, 6))
+    testSet = extractFeature(img, returnTiles(img, numberOfFeatures))
     testSet.append("goal")
     testSet.append(filename.split(".")[0])
     testSet = [testSet]
@@ -109,7 +110,7 @@ def txtToCSVParser(filename):
             cvsFile.close()
 
 
-def appendValueToDataSet(filename):
+def appendValueToDataSet(filename, numberOfFeatures):
     dataset = []
     with open(filename, 'rU') as csvFile:
         lines = csv.reader(csvFile)
@@ -120,7 +121,7 @@ def appendValueToDataSet(filename):
         for entry in dataset:
             if(os.path.isfile("data-week1/WashingtonDB/words/" + entry[0]+".png")):
                 img = Image.open("data-week1/WashingtonDB/words/" + entry[0]+".png")
-                features = extractFeature(img, returnTiles(img, 6))
+                features = extractFeature(img, returnTiles(img, numberOfFeatures))
                 for f in features:
                     entry.insert(0,f)
                 writer.writerow(entry)
@@ -162,8 +163,15 @@ def returnTiles(image, squares):
     squares_y.append(image.size[1])
     return [squares_x, squares_y]
 
+def getChar(input):
+    i = 0
+    for c in input:
+        i += ord(c)
+    return [i]
+        
+
 
 if __name__ == "__main__":
-    #txtToCSVParser('WashingtonDB.txt')
-    #appendValueToDataSet('WashingtonDB.txt.data')
-    main("O-c-t-o-b-e-r.png",6)
+    txtToCSVParser('WashingtonDB.txt')
+    appendValueToDataSet('WashingtonDB.txt.data', 12)
+    main("s-o-o-n.png",12)
