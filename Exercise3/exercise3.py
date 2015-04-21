@@ -10,25 +10,29 @@ import math
 import operator
 from PIL import Image
 import os.path
+import dtw
 
 
-def loadDataset(filename, trainingSet=[], sequenceStart=0, length=0):
+
+def loadDataset(filename, trainingSet=[]):
     with open (filename, 'rb') as csvfile:
         lines = csv.reader(csvfile)
         dataset = list(lines)
-        #x = numer of entries in a dataset, y = number of datafields in an entry In this case we are only interested in the first 4 fields
+        #x = nubmer of entries in a dataset, y = number of datafields in an entry In this case we are only interested in the first 4 fields
         for x in range(len(dataset)):
-            for y in range(sequenceStart, sequenceStart + length):
+            length = dataset[x][0] = int(dataset[x][0])
+            for y in range(1, length+1):
                 dataset[x][y] = float(dataset[x][y])
             trainingSet.append(dataset[x])
 
-def loadRandomDataset(filename, split, trainingSet=[], testSet=[], sequenceStart=0, length=0):
+def loadRandomDataset(filename, split, trainingSet=[], testSet=[]):
     with open (filename, 'rb') as csvfile:
         lines = csv.reader(csvfile)
         dataset = list(lines)
         #x = numer of entries in a dataset, y = number of datafields in an entry In this case we are only interested in the first 4 fields
         for x in range(len(dataset)):
-            for y in range(sequenceStart, sequenceStart + length):
+            length = dataset[x][0]
+            for y in range(1, length+1):
                 dataset[x][y] = float(dataset[x][y])
             if random.random() < split:
                 trainingSet.append(dataset[x])
@@ -45,14 +49,19 @@ def euclideanDistance(instance1, instance2, startSequence, length):
         distance += pow((instance1[x] - instance2[x]), 2)
     return math.sqrt(distance)
 
+def dynamicTimeWarp(instance1, instance2, startSequence, length1, length2):
+    return dtw.dtw(instance1[startSequence:length1],instance2[startSequence:length2])[0]
 
-def getNeighbors(trainingSet, testInstance, k, startSequence, length):
+
+def getNeighbors(trainingSet, testInstance, k):
     distances = []
     for x in range(len(trainingSet)):
-        dist = euclideanDistance(testInstance, trainingSet[x], startSequence, length)
+        dist = dynamicTimeWarp(testInstance,trainingSet[x],1,testInstance[0]+1,trainingSet[x][0]+1)
+        #dist = euclideanDistance(testInstance, trainingSet[x], 1, trainingSet[0][0]+1)
         distances.append((trainingSet[x], dist))
     distances.sort(key=operator.itemgetter(1))
     neighbors = []
+    print len(distances)
     for x in range(k):
         neighbors.append(distances[x][0])
         print str(x) + "nearest neighbour: " + str(distances[x])
@@ -80,20 +89,22 @@ def getAccuracy(testSet, predictions):
     return (correct/float(len(testSet))) * 100.0
 
 
-def main(filename, numberOfFeatures):
+def main(filename):
     # prepare data
     trainingSet = []
-    loadDataset('WashingtonDB.txt.data', trainingSet, 0, numberOfFeatures)
+    loadDataset('WashingtonDB.txt.data', trainingSet)
     print 'Train set: ' + repr(len(trainingSet))
     predictions = []
-    k = 20
+    k = 10
     img = Image.open("data-week1/WashingtonDB/keywords/"+filename)
-    testSet = extractFeature(img, returnTiles(img, numberOfFeatures))
+    #testSet = extractFeature(img, returnTiles(img, 2))
+    testSet = blackPerColumn(img)
+    testSet.insert(0, len(testSet))
     testSet.append("goal")
     testSet.append(filename.split(".")[0])
     testSet = [testSet]
 
-    neighbors = getNeighbors(trainingSet, testSet[0], k, 0, numberOfFeatures)
+    neighbors = getNeighbors(trainingSet, testSet[0], k)
     result = getResponse(neighbors)
     predictions.append(result)
     print('> predicted=' + repr(result) + ', actual=' + repr(testSet[0][-1]))
@@ -110,7 +121,7 @@ def txtToCSVParser(filename):
             cvsFile.close()
 
 
-def appendValueToDataSet(filename, numberOfFeatures):
+def appendValueToDataSet(filename, path):
     dataset = []
     with open(filename, 'rU') as csvFile:
         lines = csv.reader(csvFile)
@@ -119,11 +130,13 @@ def appendValueToDataSet(filename, numberOfFeatures):
     with open(filename, 'w+') as csvFile:
         writer = csv.writer(csvFile)
         for entry in dataset:
-            if(os.path.isfile("data-week1/WashingtonDB/words/" + entry[0]+".png")):
-                img = Image.open("data-week1/WashingtonDB/words/" + entry[0]+".png")
-                features = extractFeature(img, returnTiles(img, numberOfFeatures))
+            if(os.path.isfile(path + entry[0]+".png")):
+                img = Image.open(path + entry[0]+".png")
+                #features = extractFeature(img, returnTiles(img, 2))
+                features = blackPerColumn(img)
                 for f in features:
                     entry.insert(0,f)
+                entry.insert(0,len(features))
                 writer.writerow(entry)
 
 
@@ -141,6 +154,20 @@ def extractFeature(image, squares):
             features.append(black / float(area))
             black = 0
     return features
+
+def blackPerColumn(img):
+    pic = img.load()
+    height = img.size[1]
+    
+    blackPerColumn = []
+    
+    for x in range(0, img.size[0]):
+        i = 0
+        for y in range(0, img.size[1]):
+            if pic[x,y] == 0:
+                i += 1
+        blackPerColumn.append(float(i)/height*2)
+    return blackPerColumn
 
 
 def returnTiles(image, squares):
@@ -172,6 +199,7 @@ def getChar(input):
 
 
 if __name__ == "__main__":
+    #structure of data: numberofFeatures|feature1 . . . featuren|filename|groundtruth
     txtToCSVParser('WashingtonDB.txt')
-    appendValueToDataSet('WashingtonDB.txt.data', 12)
-    main("s-o-o-n.png",12)
+    appendValueToDataSet('WashingtonDB.txt.data', 'testSet/')
+    main("O-c-t-o-b-e-r.png")
