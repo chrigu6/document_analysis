@@ -48,7 +48,7 @@ def extractFeature(image, squares):
 def returnTiles(image, squares):
     tiles_y = 2
     if squares % 2 is not 0:
-        print "The number squares has to be even"
+        print "The number of squares has to be even"
     tiles_x = squares / tiles_y
     tiles_sizeX = round(image.size[0] / float(tiles_x))
     tiles_sizeY = round(image.size[1] / 2.0)
@@ -66,10 +66,10 @@ def returnTiles(image, squares):
     return [squares_x, squares_y]
 
 
-def loadDataSet(numberOfFeatures):
+def loadDataSet(numberOfFeatures, dataset):
     Datafeatures = {}
-    for _file in os.listdir("Input")[:500]:
-        img = Image.open("Input/" + _file)
+    for _file in os.listdir(dataset + "/words") :
+        img = Image.open(dataset + "/words/" + _file)
         Datafeatures[_file] = extractFeature(
             img, returnTiles(img, numberOfFeatures)
         )
@@ -114,34 +114,44 @@ def calculateROC(ranking, correctResult, keywordOccurences):
             correct / float(keywordOccurences),
             false / float(len(ranking))
         ))
-        #print correct, keywordOccurences
+    print correct, keywordOccurences
     return Datapoints
 
 
-def DatapointsToCSV(datapoints):
-    with open("data.csv", "w") as f:
+def DatapointsToCSV(datapoints, dataset, name):
+    with open(dataset + "/" + name + ".csv", "w") as f:
         f.write("FPR, TPR\n")
         for point in datapoints:
             f.write(str(point[2]) + ", " + str(point[1]) + "\n")
 
 
-def main(filename, numberOfFeatures, groundTruth):
-    correctResult = filename.strip(".png")
+def rank(filename, numberOfFeatures, groundTruth, dataset, correctResult):
+    correctResult = correctResult[:-4]
     img = Image.open(filename)
     keywordfeature = extractFeature(img, returnTiles(img, numberOfFeatures))
-    datafeatures = loadDataSet(numberOfFeatures)
+    datafeatures = loadDataSet(numberOfFeatures, dataset)
     comparedFeatures = compareFeatures(
         keywordfeature, datafeatures, numberOfFeatures
     )
     ranking = rankFiles(comparedFeatures, groundTruth[0])
     datapoints = calculateROC(ranking, correctResult, groundTruth[1])
-    DatapointsToCSV(datapoints)
+    DatapointsToCSV(datapoints, dataset, correctResult)
 
     #printRanking(ranking)
 
+
+def main(dataset):
+    for keyword in os.listdir(dataset + "/keywords"):
+        if not keyword.startswith("."):
+            rank(
+                dataset + "/keywords/" + keyword,
+                12,
+                groundTruth(dataset + "/" + dataset + ".txt", keyword[:-4]),
+                dataset,
+                keyword
+            )
+        print "Finished processing " + keyword[:-4]
+
 if __name__ == "__main__":
-    main(
-        "O-c-t-o-b-e-r.png",
-        12,
-        groundTruth("WashingtonDB.txt", "O-c-t-o-b-e-r")
-    )
+    main("Washington")
+    main("Parzival")
