@@ -70,6 +70,9 @@ def loadDataSet(numberOfFeatures, dataset):
     Datafeatures = {}
     for _file in os.listdir(dataset + "/words") :
         img = Image.open(dataset + "/words/" + _file)
+        print extractFeature(
+            img, returnTiles(img, numberOfFeatures)
+        )
         Datafeatures[_file] = extractFeature(
             img, returnTiles(img, numberOfFeatures)
         )
@@ -79,6 +82,10 @@ def loadDataSet(numberOfFeatures, dataset):
 def compareFeatures(keywordfeature, datafeatures, numberOfFeatures):
     FeatureDistances = {}
     for _file in datafeatures.keys():
+        print _file
+        print euclideanDistance(
+            keywordfeature, datafeatures[_file], numberOfFeatures
+        )
         FeatureDistances[_file] = euclideanDistance(
             keywordfeature, datafeatures[_file], numberOfFeatures
         )
@@ -129,6 +136,7 @@ def rank(filename, numberOfFeatures, groundTruth, dataset, correctResult):
     correctResult = correctResult[:-4]
     img = Image.open(filename)
     keywordfeature = extractFeature(img, returnTiles(img, numberOfFeatures))
+    print keywordfeature
     datafeatures = loadDataSet(numberOfFeatures, dataset)
     comparedFeatures = compareFeatures(
         keywordfeature, datafeatures, numberOfFeatures
@@ -154,4 +162,4 @@ def main(dataset):
 
 if __name__ == "__main__":
     main("Washington")
-    main("Parzival")
+    #main("Parzival")

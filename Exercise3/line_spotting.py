@@ -8,6 +8,7 @@ import Image
 import math
 from matplotlib.cbook import Null
 import matplotlib.pyplot as plt
+from cv2 import transform
 
 def horizontalSmearing(image, limit, stretch):
     pic = image.load()
@@ -327,6 +328,8 @@ def main(dataset):
         print totalPositive
         truePositiveRates = []
         falsePositiveRates = []
+        recall = []
+        precision = []
         truePositive = 0
         falsePositive = 0
         
@@ -352,6 +355,8 @@ def main(dataset):
                     
                 truePositiveRates.append(tpr)
                 falsePositiveRates.append(fpr)
+                recall.append(truePositive/(truePositive+falsePositive))
+                
         print truePositiveRates
         print falsePositiveRates
         printROCCurve(truePositiveRates, falsePositiveRates, keywordName)               
@@ -366,8 +371,8 @@ def printROCCurve(tpr, fpr, name):
     plt.ylabel("TPR", fontsize=14)
     plt.title("ROC Curve", fontsize=14)
     
-    plt.plot(fpr,tpr, color="blue", linewidth=2, label="Let's ROC")
-    plt.plot()
+    plt.plot(fpr,tpr, color="red", linewidth=2, label="Let's ROC")
+    plt.plot([1,0],[0,1], "r--", label="EER")
         
     plt.xlim(0.0,1.0)
     plt.ylim(0.0,1.0)
