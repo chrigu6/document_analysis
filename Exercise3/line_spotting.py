@@ -371,7 +371,7 @@ def printROCCurve(tpr, fpr, name):
     plt.ylabel("TPR", fontsize=14)
     plt.title("ROC Curve", fontsize=14)
     
-    plt.plot(fpr,tpr, color="red", linewidth=2, label="Let's ROC")
+    plt.plot(fpr,tpr, color="blue", linewidth=2, label="Let's ROC")
     plt.plot([1,0],[0,1], "r--", label="EER")
         
     plt.xlim(0.0,1.0)
