@@ -1,6 +1,7 @@
 import os
 import math
 from PIL import Image
+import matplotlib.pyplot as plt
 
 
 def groundTruth(filename, keyword):
@@ -70,9 +71,6 @@ def loadDataSet(numberOfFeatures, dataset):
     Datafeatures = {}
     for _file in os.listdir(dataset + "/words") :
         img = Image.open(dataset + "/words/" + _file)
-        print extractFeature(
-            img, returnTiles(img, numberOfFeatures)
-        )
         Datafeatures[_file] = extractFeature(
             img, returnTiles(img, numberOfFeatures)
         )
@@ -82,10 +80,6 @@ def loadDataSet(numberOfFeatures, dataset):
 def compareFeatures(keywordfeature, datafeatures, numberOfFeatures):
     FeatureDistances = {}
     for _file in datafeatures.keys():
-        print _file
-        print euclideanDistance(
-            keywordfeature, datafeatures[_file], numberOfFeatures
-        )
         FeatureDistances[_file] = euclideanDistance(
             keywordfeature, datafeatures[_file], numberOfFeatures
         )
@@ -96,7 +90,7 @@ def rankFiles(d, groundTruth):
     Ranking = []
     i = 1
     for _file in sorted(d.items(), key=lambda x: x[1]):
-        Ranking.append((i, groundTruth[_file[0]]))
+        Ranking.append((i, groundTruth[_file[0]], _file[0]))
         i += 1
     return Ranking
 
@@ -121,7 +115,6 @@ def calculateROC(ranking, correctResult, keywordOccurences):
             correct / float(keywordOccurences),
             false / float(len(ranking))
         ))
-    print correct, keywordOccurences
     return Datapoints
 
 
@@ -136,30 +129,113 @@ def rank(filename, numberOfFeatures, groundTruth, dataset, correctResult):
     correctResult = correctResult[:-4]
     img = Image.open(filename)
     keywordfeature = extractFeature(img, returnTiles(img, numberOfFeatures))
-    print keywordfeature
     datafeatures = loadDataSet(numberOfFeatures, dataset)
     comparedFeatures = compareFeatures(
         keywordfeature, datafeatures, numberOfFeatures
     )
     ranking = rankFiles(comparedFeatures, groundTruth[0])
-    datapoints = calculateROC(ranking, correctResult, groundTruth[1])
-    DatapointsToCSV(datapoints, dataset, correctResult)
+    
+    truePositiveRates = []
+    falsePositiveRates = []
+    recalls = []
+    precisions = []
+    truePositive = 0
+    falsePositive = 0
+    totalPositive = groundTruth[1]
+    totalNegative = len(ranking) - totalPositive
+    
+    keywordName = filename.split("/")[-1].split(".")[0]
+    
+    
+    for word in ranking:
+        if (word[1][:len(word[1])-1] == keywordName):
+            truePositive += 1
+        else:
+            falsePositive += 1
+                                  
+        if totalNegative == 0:
+            fpr = 0
+        else:
+            fpr = falsePositive/float(totalNegative)
+            
+        if totalPositive == 0:
+            tpr = 0
+            recall = 0
+        else:
+            precision = truePositive/float(truePositive+falsePositive)
+            tpr = truePositive/float(totalPositive)
+            recall = truePositive/float(truePositive+(totalPositive-truePositive))
+            
+            
+        recalls.append(recall)
+        precisions.append(precision)
+        truePositiveRates.append(tpr)
+        falsePositiveRates.append(fpr)
+        
+    printROCCurve(truePositiveRates, falsePositiveRates, keywordName)      
+    printRecallCurve(precisions,recalls, keywordName) 
+    
+    
+    #datapoints = calculateROC(ranking, correctResult, groundTruth[1])
+    #DatapointsToCSV(datapoints, dataset, correctResult)
+    
+    
 
-    #printRanking(ranking)
+    return ranking
+        
+
+
+def printROCCurve(tpr, fpr, name):
+    plt.figure(figsize=(4,4), dpi=80)
+    
+    plt.xlabel("FPR", fontsize=14)
+    plt.ylabel("TPR", fontsize=14)
+    plt.title("ROC Curve", fontsize=14)
+    
+    plt.plot(fpr,tpr, color="blue", linewidth=2, label="Let's ROC")
+    plt.plot([1,0],[0,1], "r--", label="EER")
+        
+    plt.xlim(0.0,1.0)
+    plt.ylim(0.0,1.0)
+    plt.legend(fontsize = 10, loc='best')
+    plt.tight_layout()
+    plt.savefig("Output/word_roc_"+name+".png")
+
+def printRecallCurve(precision, recall, name):
+    plt.figure(figsize=(4,4), dpi=80)
+    
+    plt.xlabel("Recall", fontsize=14)
+    plt.ylabel("Precision", fontsize=14)
+    plt.title("Recall-Precision Curve", fontsize=14)
+    
+    plt.plot(recall,precision, color="red", linewidth=2)
+        
+    plt.xlim(0.0,1.0)
+    plt.ylim(0.0,1.0)
+    plt.legend(fontsize = 10, loc='best')
+    plt.tight_layout()
+    plt.savefig("Output/word_recall_"+name+".png")
 
 
 def main(dataset):
     for keyword in os.listdir(dataset + "/keywords"):
         if not keyword.startswith("."):
-            rank(
+            ranking = rank(
                 dataset + "/keywords/" + keyword,
                 12,
                 groundTruth(dataset + "/" + dataset + ".txt", keyword[:-4]),
                 dataset,
                 keyword
             )
+            
+            if os.path.isfile("Output/"+dataset+"_word_"+keyword.split(".")[0]+".txt"):
+                os.remove("Output/"+dataset+"_word_"+keyword.split(".")[0]+".txt")
+            
+            for word in ranking:
+                with open("Output/"+dataset+"_word_"+keyword.split(".")[0]+".txt", "a") as f:
+                    f.write(word[2]+"\n")
         print "Finished processing " + keyword[:-4]
 
 if __name__ == "__main__":
     main("Washington")
-    #main("Parzival")
+    main("Parzival")

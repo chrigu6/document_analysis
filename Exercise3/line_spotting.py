@@ -58,7 +58,7 @@ def getComponent(image,x,y):
     rotated = 0
     
     
-    i = 0
+    i = 0   
     while (True):
         i+=1
         #Inspired by: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/theo.html
@@ -270,9 +270,9 @@ def euclideanDistance(instance1, instance2, numberOfFeatures):
 
 def main(dataset):
     lines = generateGroundTrouth(dataset+"/Lines"+dataset+".txt",dataset + "/lines/")    
-    with open("result" + dataset+".txt", "w") as f:
+    """with open("result" + dataset+".txt", "w") as f:
                 f.write("Rank\t\t\t\tKeyword\t\t\t\tLinename\t\t\t\tSimularity\t\t\t\tCorrect\n")
-                f.write("-------------------------------------------------------------------------------------------------------------------------------------------------------\n")
+                f.write("-------------------------------------------------------------------------------------------------------------------------------------------------------\n")"""
     for keyword in os.listdir(dataset + "/keywords"):
         print "Processing: " + keyword
         img = Image.open(dataset + "/keywords/" + keyword)
@@ -328,16 +328,27 @@ def main(dataset):
         print totalPositive
         truePositiveRates = []
         falsePositiveRates = []
-        recall = []
-        precision = []
+        recalls = []
+        precisions = []
         truePositive = 0
         falsePositive = 0
         
-        with open("result" + dataset+".txt", "a") as f:
-            j = 1
+        
+        
+        if os.path.isfile("Output/"+dataset+"_line_"+keyword.split(".")[0]+".txt"):
+                os.remove("Output/"+dataset+"_line_"+keyword.split(".")[0]+".txt")
+        
+        with open("Output/"+dataset+"_line_"+keyword.split(".")[0]+".txt", "a") as f:
+            """"j = 1
             for match in matches:
                 f.write(str(j) + "\t\t\t\t" +  str(keywordName) + "\t\t\t\t" + str(match[0]) + "\t\t\t\t" + str(match[1][0]) + "\t\t\t\t" + str(match[2]) + "\n")
-                j += 1
+                j += 1"""
+            for match in matches:
+                f.write(str(match[0].split(".")[0]+"\n"))
+            
+            
+            
+            
                 if match[2]:
                     truePositive += 1
                 else:
@@ -350,16 +361,22 @@ def main(dataset):
                     
                 if totalPositive == 0:
                     tpr = 0
+                    recall = 0
                 else:
+                    precision = truePositive/float(truePositive+falsePositive)
                     tpr = truePositive/float(totalPositive)
+                    recall = truePositive/float(truePositive+(totalPositive-truePositive))
                     
+            
+                recalls.append(recall)
+                precisions.append(precision)
                 truePositiveRates.append(tpr)
                 falsePositiveRates.append(fpr)
-                recall.append(truePositive/(truePositive+falsePositive))
                 
         print truePositiveRates
         print falsePositiveRates
-        printROCCurve(truePositiveRates, falsePositiveRates, keywordName)               
+        printROCCurve(truePositiveRates, falsePositiveRates, keywordName)      
+        printRecallCurve(precisions,recalls, keywordName)         
             
             #raw_input("done")
     #print lines
@@ -378,7 +395,22 @@ def printROCCurve(tpr, fpr, name):
     plt.ylim(0.0,1.0)
     plt.legend(fontsize = 10, loc='best')
     plt.tight_layout()
-    plt.savefig("roc_"+name+".png")
+    plt.savefig("Output/line_roc_"+name+".png")
+
+def printRecallCurve(precision, recall, name):
+    plt.figure(figsize=(4,4), dpi=80)
+    
+    plt.xlabel("Recall", fontsize=14)
+    plt.ylabel("Precision", fontsize=14)
+    plt.title("Recall-Precision Curve", fontsize=14)
+    
+    plt.plot(recall,precision, color="red", linewidth=2)
+        
+    plt.xlim(0.0,1.0)
+    plt.ylim(0.0,1.0)
+    plt.legend(fontsize = 10, loc='best')
+    plt.tight_layout()
+    plt.savefig("Output/line_recall_"+name+".png")
     
 
 class Line:
@@ -411,5 +443,5 @@ def generateGroundTrouth(filename, path):
         
 if __name__ == "__main__":
     main("Washington")
-    main("Parzival")
+    #main("Parzival")
     
