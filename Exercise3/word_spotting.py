@@ -199,7 +199,7 @@ def printROCCurve(tpr, fpr, name):
     plt.ylim(0.0,1.0)
     plt.legend(fontsize = 10, loc='best')
     plt.tight_layout()
-    plt.savefig("Output/word_roc_"+name+".png")
+    plt.savefig("Output/Words/word_roc_"+name+".png")
 
 def printRecallCurve(precision, recall, name):
     plt.figure(figsize=(4,4), dpi=80)
@@ -214,10 +214,17 @@ def printRecallCurve(precision, recall, name):
     plt.ylim(0.0,1.0)
     plt.legend(fontsize = 10, loc='best')
     plt.tight_layout()
-    plt.savefig("Output/word_recall_"+name+".png")
+    plt.savefig("Output/Words/word_recall_"+name+".png")
 
 
 def main(dataset):
+    if not os.path.exists("Output"):
+        os.mkdir("Output")
+        
+    if not os.path.exists("Output/Words"):
+        os.mkdir("Output/Words")
+    
+    
     for keyword in os.listdir(dataset + "/keywords"):
         if not keyword.startswith("."):
             ranking = rank(
@@ -228,11 +235,11 @@ def main(dataset):
                 keyword
             )
             
-            if os.path.isfile("Output/"+dataset+"_word_"+keyword.split(".")[0]+".txt"):
-                os.remove("Output/"+dataset+"_word_"+keyword.split(".")[0]+".txt")
+            if os.path.isfile("Output/Words/"+dataset+"_word_"+keyword.split(".")[0]+".txt"):
+                os.remove("Output/Words/"+dataset+"_word_"+keyword.split(".")[0]+".txt")
             
             for word in ranking:
-                with open("Output/"+dataset+"_word_"+keyword.split(".")[0]+".txt", "a") as f:
+                with open("Output/Words/"+dataset+"_word_"+keyword.split(".")[0]+".txt", "a") as f:
                     f.write(word[2]+"\n")
         print "Finished processing " + keyword[:-4]
 

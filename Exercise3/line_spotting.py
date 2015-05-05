@@ -269,6 +269,13 @@ def euclideanDistance(instance1, instance2, numberOfFeatures):
 
 
 def main(dataset):
+    
+    if not os.path.exists("Output"):
+        os.mkdir("Output")
+        
+    if not os.path.exists("Output/Lines"):
+        os.mkdir("Output/Lines")
+    
     lines = generateGroundTrouth(dataset+"/Lines"+dataset+".txt",dataset + "/lines/")    
     """with open("result" + dataset+".txt", "w") as f:
                 f.write("Rank\t\t\t\tKeyword\t\t\t\tLinename\t\t\t\tSimularity\t\t\t\tCorrect\n")
@@ -324,8 +331,6 @@ def main(dataset):
                     
         totalLines = len(lines)
         totalNegative = totalLines - totalPositive
-        print totalNegative
-        print totalPositive
         truePositiveRates = []
         falsePositiveRates = []
         recalls = []
@@ -335,10 +340,10 @@ def main(dataset):
         
         
         
-        if os.path.isfile("Output/"+dataset+"_line_"+keyword.split(".")[0]+".txt"):
-                os.remove("Output/"+dataset+"_line_"+keyword.split(".")[0]+".txt")
+        if os.path.isfile("Output/Lines/"+dataset+"_line_"+keyword.split(".")[0]+".txt"):
+                os.remove("Output/Lines/"+dataset+"_line_"+keyword.split(".")[0]+".txt")
         
-        with open("Output/"+dataset+"_line_"+keyword.split(".")[0]+".txt", "a") as f:
+        with open("Output/Lines/"+dataset+"_line_"+keyword.split(".")[0]+".txt", "a") as f:
             """"j = 1
             for match in matches:
                 f.write(str(j) + "\t\t\t\t" +  str(keywordName) + "\t\t\t\t" + str(match[0]) + "\t\t\t\t" + str(match[1][0]) + "\t\t\t\t" + str(match[2]) + "\n")
@@ -373,8 +378,6 @@ def main(dataset):
                 truePositiveRates.append(tpr)
                 falsePositiveRates.append(fpr)
                 
-        print truePositiveRates
-        print falsePositiveRates
         printROCCurve(truePositiveRates, falsePositiveRates, keywordName)      
         printRecallCurve(precisions,recalls, keywordName)         
             
@@ -395,7 +398,7 @@ def printROCCurve(tpr, fpr, name):
     plt.ylim(0.0,1.0)
     plt.legend(fontsize = 10, loc='best')
     plt.tight_layout()
-    plt.savefig("Output/line_roc_"+name+".png")
+    plt.savefig("Output/Lines/line_roc_"+name+".png")
 
 def printRecallCurve(precision, recall, name):
     plt.figure(figsize=(4,4), dpi=80)
@@ -410,7 +413,7 @@ def printRecallCurve(precision, recall, name):
     plt.ylim(0.0,1.0)
     plt.legend(fontsize = 10, loc='best')
     plt.tight_layout()
-    plt.savefig("Output/line_recall_"+name+".png")
+    plt.savefig("Output/Lines/line_recall_"+name+".png")
     
 
 class Line:
@@ -443,5 +446,5 @@ def generateGroundTrouth(filename, path):
         
 if __name__ == "__main__":
     main("Washington")
-    #main("Parzival")
+    main("Parzival")
     
