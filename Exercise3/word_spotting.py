@@ -190,7 +190,7 @@ def printROCCurve(tpr, fpr, name):
     
     plt.xlabel("FPR", fontsize=14)
     plt.ylabel("TPR", fontsize=14)
-    plt.title("ROC Curve", fontsize=14)
+    plt.title(name, fontsize=14)
     
     plt.plot(fpr,tpr, color="blue", linewidth=2, label="Let's ROC")
     plt.plot([1,0],[0,1], "r--", label="EER")
@@ -206,9 +206,9 @@ def printRecallCurve(precision, recall, name):
     
     plt.xlabel("Recall", fontsize=14)
     plt.ylabel("Precision", fontsize=14)
-    plt.title("Recall-Precision Curve", fontsize=14)
+    plt.title(name, fontsize=14)
     
-    plt.plot(recall,precision, color="red", linewidth=2)
+    plt.plot(recall,precision, color="red", linewidth=2, label="Recall-Precision Curve")
         
     plt.xlim(0.0,1.0)
     plt.ylim(0.0,1.0)
