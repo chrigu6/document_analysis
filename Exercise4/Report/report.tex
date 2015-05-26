@@ -1,0 +1,51 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{24.0pt}
+
+\rfoot{
+	\begin{tabular}{r}
+		Document Analysis\\
+	\end{tabular}
+}
+
+\lhead{
+	\begin{tabular}{l}
+		SS 15\\
+	\end{tabular}
+}
+
+\rhead{
+	\begin{tabular}{l}
+		Christoph Reinhart, Nicolas Spycher
+	\end{tabular}
+}
+
+\begin{document}
+
+	\section{Handwritten Digits Recognition with Neural Networks}
+	
+	\subsection{Features}
+	
+	\par{We wrote a class that is able to extract features from the test and training dataset. The most basic feature are the pixel values, which is not that convenient, since it takes a lot of computer power to compute the corresponding Neural Network. This is why we added some other smaller features: }
+	
+	\begin{itemize}
+		\item \textbf{Black Pixel Ratio:} Like in the word spotting exercise we spliced the picture in to an even amount of tiles and calculated the ratio between the number of black pixels in every tile to the amount of all the black pixels.
+		\item \textbf{Max Pixel:} This feature is similar to the pixel values feature only that it combines four adjacent pixels and only takes the maximum pixel value into account. The adjacent pixels are ordered in a square. This shrinks the number of features by a factor of 4 compared to the pure pixel value feature.
+		\item \textbf{Min Pixel:} This is the same as the max pixel feature only with the minimum value taken into account.
+		\item \textbf{Mean Pixel:} Again the same thing but we take the mean of this four pixel as a feature.
+	\end{itemize}
+	
+	\subsection{Feature Combination}
+	
+	\par{Since there is a possibility that two features performing bad can yield better results when they are considered together we wrote a function that can combine several features and return a new feature vector containing all features together. This provided us the ability to freely combine all the five features we have prepared. This gave us even more settings to test the best way to use the neural network.}
+	
+	\subsection{Testing}
+	
+	\subsection{Results}
+
+	\subsection{Conclusion}
+
+\end{document}
