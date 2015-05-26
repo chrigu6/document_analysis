@@ -7,6 +7,7 @@ import subprocess
 import Image
 import os
 from random import randint
+import features
 
 
 
@@ -98,7 +99,7 @@ def executeJar(inputTraining, inputTest, outputTraining, outputResults, activati
 
 
 if __name__ == '__main__':
-    pathToImages = "/home/chrigu/Desktop/images/images"
+    pathToImages = "/home/chrigu/Desktop/images/images/"
     inputTrainingFile = "input_training.txt"
     inputTestFile = "input_test.txt"
     outputTrainingFile = "output_training.txt"
@@ -107,11 +108,20 @@ if __name__ == '__main__':
     
     if not os.path.isfile(inputTrainingFile):
         print "extracting features"
-        features = extractFeature(pathToImages)
-        print "generating training file"
-        generateOutput(features[0], inputTrainingFile)
+        f = features.Features(pathToImages)
+        trainFeatures = f.get_specific_feature(squares=8)
+        testFeatures = f.get_specific_feature(squares=8, folder="test")
+        print "generating training and testing file"
+        """ generateOutput(features[0], inputTrainingFile)
         print "generating testing file"
-        generateOutput(features[1], inputTestFile)
+        generateOutput(features[1], inputTestFile)"""
+        for item in trainFeatures:
+            f.write_feature_vector(item[0], item[1], item[2], "noClue")
+        
+        for item in testFeatures:
+            f.write_feature_vector(item[0], item[1], item[2], "noClue")
+            
+            
     
     featureSize = 784
     numberOfNeurons = 5
@@ -159,7 +169,7 @@ if __name__ == '__main__':
             if(learningRate<0.1):
                 learningRate = learningRate * 10
             else:
-                learningRate = learningRate + 0.1
+                learningRate = learningRate + 0.2
             numberOfEpochs = 5
             
         learningRate = 0.0001
